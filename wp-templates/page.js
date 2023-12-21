@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { useQuery, gql } from '@apollo/client';
 import * as MENUS from '../constants/menus';
 import { BlogInfoFragment } from '../fragments/GeneralSettings';
 import {
@@ -13,14 +13,19 @@ import {
   SEO,
 } from '../components';
 
-export default function Component(props) {
+export default function ModelPage() {
   // Loading state for previews
-  if (props.loading) {
+  if (loading) {
     return <>Loading...</>;
   }
 
+  const { loading, error, data } = useQuery(GET_MODEL);
+
+  if (loading) return 'Loading...';
+  if (error) return `Error! ${error.message}`;
+
   const { title: siteTitle, description: siteDescription } =
-    props?.data?.generalSettings;
+    data?.generalSettings;
   const primaryMenu = props?.data?.headerMenuItems?.nodes ?? [];
   const footerMenu = props?.data?.footerMenuItems?.nodes ?? [];
   const { title, content, featuredImage } = props?.data?.page ?? { title: '' };
