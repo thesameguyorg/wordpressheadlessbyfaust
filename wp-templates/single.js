@@ -23,7 +23,7 @@ export default function Component(props) {
     props?.data?.generalSettings;
   const primaryMenu = props?.data?.headerMenuItems?.nodes ?? [];
   const footerMenu = props?.data?.footerMenuItems?.nodes ?? [];
-  const { title, content, featuredImage, date, author } = props.data.post;
+  const professionalsList = props.professionals || [];
 
   return (
     <>
@@ -39,13 +39,15 @@ export default function Component(props) {
       />
       <Main>
         <>
-          <EntryHeader
-            title={title}
-            image={featuredImage?.node}
-            date={date}
-            author={author?.node?.name}
-          />
           <Container>
+            {professionalsList.map((professional) => (
+              <EntryHeader
+                key={professional.id}
+                title={professional.title}
+                content={professional.content}
+              />
+             // More fields can be displayed here
+            ))}
             <ContentWrapper content={content} />
           </Container>
         </>
@@ -59,13 +61,11 @@ Component.query = gql`
   ${BlogInfoFragment}
   ${NavigationMenu.fragments.entry}
   ${FeaturedImage.fragments.entry}
-  query GetPost(
-    $databaseId: ID!
+  query GetProfessionals(
     $headerLocation: MenuLocationEnum
     $footerLocation: MenuLocationEnum
-    $asPreview: Boolean = false
   ) {
-    post(id: $databaseId, idType: DATABASE_ID, asPreview: $asPreview) {
+    professionals(where: { orderby: { field: DATE, order: DESC } }) {
       title
       content
       date

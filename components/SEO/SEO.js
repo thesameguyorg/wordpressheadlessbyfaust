@@ -4,14 +4,17 @@ import Head from 'next/head';
  * Provide SEO related meta tags to a page.
  *
  * @param {Props} props The props object.
- * @param {string} props.title Used for the page title, og:title, twitter:title, etc.
+ * @param {string | function} props.title Can be a string for static titles or a function returning a title string using a professional item.
  * @param {string} props.description Used for the meta description, og:description, twitter:description, etc.
  * @param {string} props.imageUrl Used for the og:image and twitter:image. NOTE: Must be an absolute url.
  * @param {string} props.url Used for the og:url and twitter:url.
  *
  * @returns {React.ReactElement} The SEO component
  */
-export default function SEO({ title, description, imageUrl, url }) {
+export default function SEO({ title, description, imageUrl, url, professional }) {
+  if (typeof title === 'function') title = title(professional);
+  if (typeof description === 'function') description = description(professional);
+  if (typeof imageUrl === 'function') imageUrl = imageUrl(professional);
   if (!title && !description && !imageUrl && !url) {
     return null;
   }
@@ -48,7 +51,7 @@ export default function SEO({ title, description, imageUrl, url }) {
 
         {url && (
           <>
-            <meta property="og:url" content={url} />
+            <meta property="og:url" content={url || professional?.uri} />
             <meta property="twitter:url" content={url} />
           </>
         )}
