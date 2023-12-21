@@ -15,7 +15,10 @@ import { getNextStaticProps } from '@faustwp/core';
 export default function Page(props) {
   const { data } = useQuery(Page.query, {
     variables: Page.variables(),
+    // Fetching data for the custom post type 'professionals'
+    fetchPolicy: 'cache-and-network',
   });
+  const professionals = data?.professionals?.nodes ?? [];
   const title = props.title;
 
   const { title: siteTitle, description: siteDescription } = data?.generalSettings;
@@ -24,7 +27,7 @@ export default function Page(props) {
 
   return (
     <>
-      <SEO title={siteTitle} description={siteDescription} />
+      <SEO title={siteTitle} description={siteDescription} professional={professionals[0]} />
       <Header
         title={siteTitle}
         description={siteDescription}
@@ -32,7 +35,9 @@ export default function Page(props) {
       />
       <Main>
         <Container>
-          <Hero title={title} />
+          {professionals.map((professional) => (
+        <Hero key={professional.id} title={professional.title} />
+      ))}
           <div className="text-center">
             <p>This page is utilizing the Next.js File based routes.</p>
             <code>pages/example.js</code>
