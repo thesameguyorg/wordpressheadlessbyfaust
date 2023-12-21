@@ -23,12 +23,12 @@ export default function Component(props) {
     props?.data?.generalSettings;
   const primaryMenu = props?.data?.headerMenuItems?.nodes ?? [];
   const footerMenu = props?.data?.footerMenuItems?.nodes ?? [];
-  const { title, content, featuredImage } = props?.data?.page ?? { title: '' };
+  const professionalsList = props?.data?.professionals?.nodes ?? [];
 
   return (
     <>
       <SEO
-        title={siteTitle}
+        title={'Professionals'}
         description={siteDescription}
         imageUrl={featuredImage?.node?.sourceUrl}
       />
@@ -39,9 +39,13 @@ export default function Component(props) {
       />
       <Main>
         <>
-          <EntryHeader title={title} image={featuredImage?.node} />
           <Container>
-            <ContentWrapper content={content} />
+            {professionalsList.map((professional) => (
+              <div key={professional.id}>
+                <EntryHeader title={professional.title} />
+                <ContentWrapper content={professional.content} />
+              </div>
+            ))}
           </Container>
         </>
       </Main>
@@ -63,16 +67,18 @@ Component.query = gql`
   ${BlogInfoFragment}
   ${NavigationMenu.fragments.entry}
   ${FeaturedImage.fragments.entry}
-  query GetPageData(
+  query GetProfessionals(
     $databaseId: ID!
     $headerLocation: MenuLocationEnum
     $footerLocation: MenuLocationEnum
     $asPreview: Boolean = false
   ) {
-    page(id: $databaseId, idType: DATABASE_ID, asPreview: $asPreview) {
-      title
-      content
-      ...FeaturedImageFragment
+    professionals {
+      nodes {
+        id
+        title
+        content
+      }
     }
     generalSettings {
       ...BlogInfoFragment
