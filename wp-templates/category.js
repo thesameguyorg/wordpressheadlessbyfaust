@@ -1,19 +1,10 @@
-import { gql } from '@apollo/client';
+import { useQuery, gql } from '@apollo/client';
+import ModelCard from '../components/ModelCard';
 import * as MENUS from '../constants/menus';
 import { BlogInfoFragment } from '../fragments/GeneralSettings';
-import {
-  Header,
-  Footer,
-  Main,
-  Container,
-  EntryHeader,
-  NavigationMenu,
-  Post,
-  FeaturedImage,
-  SEO,
-} from '../components';
+import { Header, Footer, Main, Container, NavigationMenu, EntryHeader, FeaturedImage, SEO } from '../components';
 
-export default function Component(props) {
+export default function Category(props) {
   const { title: siteTitle, description: siteDescription } =
     props?.data?.generalSettings;
   const primaryMenu = props?.data?.headerMenuItems?.nodes ?? [];
